@@ -26,4 +26,15 @@ public class SlotsGroup {
         }
     }
 
+    /**
+     * Callback when a value of a slot has been found.
+     */
+    public void valueFound(Slot valuedSlot) {
+        for (Slot slot : slots) {
+            if(slot != valuedSlot) {
+                slot.setNotValue(valuedSlot.getValue());
+            }
+        }
+    }
+
 }
