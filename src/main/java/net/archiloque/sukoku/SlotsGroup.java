@@ -61,7 +61,7 @@ public class SlotsGroup {
             if (slotValueIntegerEntry.getValue().size() == 1) {
                 SlotValue slotValue = slotValueIntegerEntry.getKey();
                 Slot slot = slotValueIntegerEntry.getValue().get(0);
-                System.out.println("Group " + this + " has a single slot where the value " + slotValue + " is possible " + slot);
+                System.out.println("Group " + this + " has a single slot where the value " + slotValue + " is the only possible " + slot);
                 slot.setValue(slotValue);
             }
         }
