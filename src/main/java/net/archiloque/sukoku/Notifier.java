@@ -7,4 +7,6 @@ package net.archiloque.sukoku;
 public interface Notifier {
 
     void slotValueFound(Slot slot);
+
+    void slotNotValueFound(Slot slot);
 }

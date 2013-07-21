@@ -4,18 +4,30 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
+ * Represnts the sudoku grid, most code is to setup the slots, an event queue, and a big toString
  * © Julien Kirch 2013 - Licensed under MIT license
  */
 public class Grid implements Notifier {
 
-    class SlotEventValueFound {
+    abstract class SlotEvent {
 
-        private final Slot slot;
+        protected final Slot slot;
 
-        SlotEventValueFound(Slot slot) {
+        SlotEvent(Slot slot) {
             this.slot = slot;
         }
 
+        abstract void process();
+
+    }
+
+    class SlotEventValueFound extends SlotEvent {
+
+        SlotEventValueFound(Slot slot) {
+            super(slot);
+        }
+
+        @Override
         void process() {
             System.out.println("Processing slot event value found " + slot);
             slot.getColumn().valueFound(slot);
@@ -24,15 +36,29 @@ public class Grid implements Notifier {
         }
     }
 
+    class SlotEventNotValueFound extends SlotEvent {
+
+        SlotEventNotValueFound(Slot slot) {
+            super(slot);
+        }
+
+        @Override
+        void process() {
+            System.out.println("Processing slot event not value found " + slot);
+            slot.getColumn().valueNotFound(slot);
+            slot.getLine().valueNotFound(slot);
+            slot.getSquare().valueNotFound(slot);
+        }
+    }
+
     private final Slot[] slots = new Slot[81];
 
-    private final SlotsGroup[] columns = new SlotsGroup[9];
-    private final SlotsGroup[] lines = new SlotsGroup[9];
-    private final SlotsGroup[] squares = new SlotsGroup[9];
-
-    private final Queue<SlotEventValueFound> events = new LinkedList<SlotEventValueFound>();
+    private final Queue<SlotEvent> events = new LinkedList<SlotEvent>();
 
     public Grid() {
+        SlotsGroup[] columns = new SlotsGroup[9];
+        SlotsGroup[] squares = new SlotsGroup[9];
+        SlotsGroup[] lines = new SlotsGroup[9];
         for (int i = 0; i < 9; i++) {
             columns[i] = new SlotsGroup(SlotsGroupType.COLUMN, SlotValue.getByValue(i + 1));
             lines[i] = new SlotsGroup(SlotsGroupType.LINE, SlotValue.getByValue(i + 1));
@@ -44,12 +70,15 @@ public class Grid implements Notifier {
 
                 slots[lineIndex * 9 + columnIndex] = slot;
 
-                columns[columnIndex].addSlot(slot);
-                slot.setColumn(columns[columnIndex]);
-                lines[lineIndex].addSlot(slot);
-                slot.setLine(lines[lineIndex]);
-                getSquare(columnIndex, lineIndex).addSlot(slot);
-                slot.setSquare(getSquare(columnIndex, lineIndex));
+                SlotsGroup column = columns[columnIndex];
+                column.addSlot(slot);
+                slot.setColumn(column);
+                SlotsGroup line = lines[lineIndex];
+                line.addSlot(slot);
+                slot.setLine(line);
+                SlotsGroup square = squares[((lineIndex / 3) * 3) + columnIndex / 3];
+                square.addSlot(slot);
+                slot.setSquare(square);
             }
         }
     }
@@ -71,14 +100,16 @@ public class Grid implements Notifier {
         processEvents();
     }
 
-    private SlotsGroup getSquare(int columnIndex, int lineIndex) {
-        return squares[((lineIndex / 3) * 3) + columnIndex / 3];
-    }
-
     @Override
     public void slotValueFound(Slot slot) {
         System.out.println("Notified that a slot value has been found " + slot);
         events.add(new SlotEventValueFound(slot));
+    }
+
+    @Override
+    public void slotNotValueFound(Slot slot) {
+        System.out.println("Notified that a slot value is no more possible " + slot);
+        events.add(new SlotEventNotValueFound(slot));
     }
 
     private void processEvents() {
@@ -131,15 +162,23 @@ public class Grid implements Notifier {
                             result.append('*');
                         }
                     }
-                    if (slotPossibleValueColumnIndex == 2) {
-                        result.append('|');
+                    if ((slotPossibleValueColumnIndex == 2) && (absoluteColumnIndex != 26)) {
+                        if (slotColumnIndex % 3 == 2) {
+                            result.append('‖');
+                        } else {
+                            result.append('|');
+                        }
                     }
 
                 }
                 result.append("\n");
-                if (slotPossibleValueLineIndex == 2) {
+                if ((slotPossibleValueLineIndex == 2) && (absoluteLineIndex != 26)) {
                     for (int i = 0; i < 36; i++) {
-                        result.append("-");
+                        if (slotLineIndex % 3 == 2) {
+                            result.append("=");
+                        } else {
+                            result.append("-");
+                        }
                     }
                     result.append("\n");
                 }
