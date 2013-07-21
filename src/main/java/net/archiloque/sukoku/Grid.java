@@ -8,25 +8,14 @@ import java.util.Queue;
  */
 public class Grid implements Notifier {
 
-    abstract class SlotEvent {
+    class SlotEventValueFound {
 
-        protected final Slot slot;
+        private final Slot slot;
 
-        SlotEvent(Slot slot) {
+        SlotEventValueFound(Slot slot) {
             this.slot = slot;
         }
 
-        abstract void process();
-
-    }
-
-    class SlotEventValueFound extends SlotEvent {
-
-        SlotEventValueFound(Slot slot) {
-            super(slot);
-        }
-
-        @Override
         void process() {
             System.out.println("Processing slot event value found " + slot);
             slot.getColumn().valueFound(slot);
@@ -41,7 +30,7 @@ public class Grid implements Notifier {
     private final SlotsGroup[] lines = new SlotsGroup[9];
     private final SlotsGroup[] squares = new SlotsGroup[9];
 
-    private final Queue<SlotEvent> events = new LinkedList<SlotEvent>();
+    private final Queue<SlotEventValueFound> events = new LinkedList<SlotEventValueFound>();
 
     public Grid() {
         for (int i = 0; i < 9; i++) {
