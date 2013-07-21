@@ -1,8 +1,8 @@
 package net.archiloque.sukoku;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
+import java.util.EnumSet;
 
 /**
  * Represents a slot
@@ -14,7 +14,7 @@ public class Slot {
 
     private SlotValue value = null;
 
-    private final List<SlotValue> possibleValues;
+    private final EnumSet<SlotValue> possibleValues;
 
     private final int columnIndex;
 
@@ -30,14 +30,14 @@ public class Slot {
         this.notifier = notifier;
         this.columnIndex = columnIndex;
         this.lineIndex = lineIndex;
-        possibleValues = new ArrayList<SlotValue>(Arrays.asList(SlotValue.values()));
+        possibleValues = EnumSet.allOf(SlotValue.class);
     }
 
     public SlotValue getValue() {
         return value;
     }
 
-    public List<SlotValue> getPossibleValues(){
+    public Collection<SlotValue> getPossibleValues(){
         return possibleValues;
     }
 
@@ -78,7 +78,7 @@ public class Slot {
         if (value == null) {
             possibleValues.remove(slotValue);
             if (possibleValues.size() == 1) {
-                value = possibleValues.get(0);
+                value = (SlotValue) possibleValues.toArray()[0];
                 System.out.println("A slot had only one single value " + this);
                 notifier.slotValueFound(this);
             }
