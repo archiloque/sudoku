@@ -43,4 +43,18 @@ public class GridTest {
         );
     }
 
+    @Test
+    public void testGrid3() {
+        Grid grid = new Grid("5 9 7 8 6  8 3 1  6       2 8 4 6 9           3 7 5 2 3       4  7 6 5  1 4 5 2 3");
+        assert grid.toString().equals(
+                "549271836\n" +
+                        "278639145\n" +
+                        "613548972\n" +
+                        "785426391\n" +
+                        "962183457\n" +
+                        "431795628\n" +
+                        "356912784\n" +
+                        "827364519\n" +
+                        "194857263\n");
+    }
 }

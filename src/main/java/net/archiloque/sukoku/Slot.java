@@ -37,6 +37,10 @@ public class Slot {
         return value;
     }
 
+    public List<SlotValue> getPossibleValues(){
+        return possibleValues;
+    }
+
     public boolean isPossibleValue(SlotValue slotValue) {
         return possibleValues.contains(slotValue);
     }
