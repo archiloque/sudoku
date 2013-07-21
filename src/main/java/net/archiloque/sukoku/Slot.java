@@ -14,7 +14,7 @@ public class Slot {
 
     private SlotValue value = null;
 
-    private final EnumSet<SlotValue> possibleValues;
+    private final Collection<SlotValue> possibleValues;
 
     private final int columnIndex;
 
