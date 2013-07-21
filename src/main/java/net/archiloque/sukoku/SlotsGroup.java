@@ -57,6 +57,7 @@ public class SlotsGroup {
             }
         }
 
+        // check it some values are only possible on one slot
         for (Map.Entry<SlotValue, List<Slot>> slotValueIntegerEntry : possibleValues.entrySet()) {
             if (slotValueIntegerEntry.getValue().size() == 1) {
                 SlotValue slotValue = slotValueIntegerEntry.getKey();
